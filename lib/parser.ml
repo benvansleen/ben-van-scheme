@@ -44,7 +44,7 @@ let wrapped_by ch_open p ch_close =
   and+ _closing = char ch_close in
   expr
 
-let wrapped_by_paren = wrapped_by '(' expr ')'
+let wrapped_by_paren expr = wrapped_by '(' expr ')'
 
 let parenthesized expr =
   let+ expr = wrapped_by_paren expr in
@@ -70,7 +70,7 @@ let bindings expr =
       and+ expr = expr in
       (symbol, expr)
     in
-    let+ binding wrapped_by_paren = binding in
+    let+ binding = wrapped_by_paren binding in
     binding)
   in
   let+ bindings =
@@ -120,6 +120,10 @@ let list expr =
   let elements = sep_by whitespace expr in
   let+ list = wrapped_by '[' elements ']' in
   `List list
+
+let symbol =
+  let+ s = symbol in
+  `Symbol s
 
 let compound expr =
   [ define; lambda; let_; if_; op ] |> List.map ~f:(fun p -> p expr) |> choice

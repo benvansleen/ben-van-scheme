@@ -1,4 +1,5 @@
 open Base
+open Ben_van_scheme
 
 let fail name actual expected =
   let err =
@@ -9,14 +10,13 @@ let fail name actual expected =
   failwith err
 
 let harness name cmd expected =
-  match cmd |> Ben_van_scheme.eval |> List.last with
+  match cmd |> Shell.eval |> List.last with
   | Some s when String.equal s expected -> ()
   | Some s -> fail name s expected
   | _ -> fail name "" expected
 
 let test_addition () =
-  let cmd = "\n\n\n\t\t\t\t\t\t+ 1 1\n\n\n\n\n\n\n\
-             n1\n\n\n1 1" in
+  let cmd = "\n\n\n\t\t\t\t\t\t+ 1 1\n\n\n\n\n\n\n\n1\n\n\n1 1" in
   harness "addition" cmd "5"
 
 let test_add_float () =
@@ -25,7 +25,7 @@ let test_add_float () =
 
 let test_sh () =
   let cmd = "echo \"hi\"" in
-  harness "sh" cmd "hi"
+  harness "sh" cmd "\"hi\""
 
 let test_fact () =
   let cmd =

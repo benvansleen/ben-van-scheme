@@ -34,7 +34,7 @@ and string_of_let { bindings; body } =
   let bindings, body = (string_of_bindings bindings, string_of_expr body) in
   sprintf "(let (%s) %s)" bindings body
 
-and string_of_laambda { args; body } =
+and string_of_lambda { args; body } =
   let args, body = (string_join ' ' args, string_of_expr body) in
   sprintf "(lambda (%s) %s)" args body
 
@@ -45,4 +45,7 @@ and string_of_define { name; value } =
 and string_of_list exprs =
   exprs |> List.map ~f:string_of_expr |> string_join ' ' |> sprintf "(%s)"
 
+and string_of_bindings bindings =
+  bindings |> List.map ~f:string_of_binding |> string_join ' ' |> sprintf "[ %s ]"
+  
 and string_of_binding (k, v) = sprintf "(%s %s)" k (string_of_expr v)

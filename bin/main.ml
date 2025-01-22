@@ -1,3 +1,5 @@
+open Ben_van_scheme
+
 let () =
   match Sys.argv with
   | [| _ |] -> Shell.interactive ()

@@ -23,4 +23,4 @@ let read_file_to_string filename =
   s
 
 let run_file filename =
-  filename |> read_file_to_string |> eval |> List.iter ~f:print_endline
+  filename |> read_file_to_string |> eval |> List.iter ~f:Stdlib.print_endline

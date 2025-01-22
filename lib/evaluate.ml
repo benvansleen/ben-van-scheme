@@ -40,7 +40,18 @@ and eval_symbol s ~env =
 and eval_parenthesized expr ~env =
   match expr with
   | `Symbol s -> eval_op { f = s; args = [] } ~env
+  | #expr as r -> eval r ~env
+
+and eval_op { f; args } ~env =
+  match Env.find env f with
+  | None -> eval_op { f = shell_cmd f ~env; args } ~env
   | Some expr -> eval_expr expr f args ~env
+
+and eval_expr expr f args ~env =
+  let args = List.map ~f:(eval ~env) args in
+  match expr with
+  | `Callable call -> call f args
+  | #expr as e -> eval e ~env
 
 and to_bool = function
   | `Int n -> n <> 0
