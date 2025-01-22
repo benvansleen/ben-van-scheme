@@ -2,15 +2,7 @@
   inputs = {
     nixpkgs.url = "github:nix-ocaml/nix-overlays";
     systems.url = "github:nix-systems/default";
-
-    pre-commit-hooks = {
-      url = "github:cachix/git-hooks.nix";
-    };
-
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    pre-commit-hooks.url = "github:cachix/git-hooks.nix";
   };
 
   outputs =
@@ -18,12 +10,10 @@
       systems,
       nixpkgs,
       pre-commit-hooks,
-      treefmt-nix,
       self,
       ...
     }:
     let
-      treefmtEval = pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
       eachSystem =
         f:
         nixpkgs.lib.genAttrs (import systems) (
@@ -61,39 +51,29 @@
             inputsFrom = [
               self.packages.${system}.default
             ];
-            packages = with ocamlPackages;
-              [
-                ocaml-lsp
-                ocamlformat
-                utop
-              ];
+            packages = with ocamlPackages; [
+              ocaml-lsp
+              ocamlformat
+              utop
+            ];
 
             buildInputs = [
               self.checks.${system}.pre-commit-check.enabledPackages
             ];
-            shellHook = self.checks.${system}.pre-commit-check.shellHook;
+            inherit (self.checks.${system}.pre-commit-check) shellHook;
           };
       });
 
-      formatter = eachSystem (pkgs: (treefmtEval pkgs).config.build.wrapper);
-      checks = eachSystem (
-        pkgs:
-        {
-          pre-commit-check = pre-commit-hooks.lib.${pkgs.system}.run {
-            src = ./.;
-            hooks = {
-              deadnix.enable = true;
-              ripsecrets.enable = true;
-              nix-fmt = {
-                enable = true;
-                name = "nix fmt";
-                entry = "${pkgs.nix}/bin/nix fmt";
-                language = "system";
-                stages = [ "pre-commit" ];
-              };
-            };
+      checks = eachSystem (pkgs: {
+        pre-commit-check = pre-commit-hooks.lib.${pkgs.system}.run {
+          src = ./.;
+          hooks = {
+            deadnix.enable = true;
+            dune-fmt.enable = true;
+            nixfmt-rfc-style.enable = true;
+            ripsecrets.enable = true;
           };
-      }
-      );
+        };
+      });
     };
 }

@@ -31,6 +31,7 @@ let float =
   and+ fraction = option "0" digits in
   let f = sprintf "%s.%s" whole fraction |> Float.of_string in
   `Float f
+
 and integer =
   let+ whole = whole_number in
   let i = Int.of_string whole in
@@ -63,7 +64,7 @@ let if_ expr =
   `If { cond; branch_if_true; branch_if_false }
 
 let bindings expr =
-  let binding expr = (
+  let binding expr =
     let binding =
       let+ symbol = symbol
       and+ _sep = whitespace
@@ -71,7 +72,7 @@ let bindings expr =
       (symbol, expr)
     in
     let+ binding = wrapped_by_paren binding in
-    binding)
+    binding
   in
   let+ bindings =
     wrapped_by_paren @@ many1 @@ whitespace_around @@ binding expr
@@ -126,16 +127,21 @@ let symbol =
   `Symbol s
 
 let compound expr =
-  [ define; lambda; let_; if_; op ] |> List.map ~f:(fun p -> p expr) |> choice
+  [ define; lambda; let_; if_; op ]
+  |> List.map ~f:(fun p -> p expr)
+  |> choice
 
 let terminal expr = choice [ list expr; symbol; string_; number ]
 
 let expr =
-  fix @@ fun expr ->
-         whitespace_around (parenthesized @@ compound expr <|> terminal expr)
+  fix
+  @@ fun expr ->
+  whitespace_around (parenthesized @@ compound expr <|> terminal expr)
 
 let root_expr =
-  choice [ compound expr; expr] ~failure_msg:"Failed parsing root expression"
+  choice
+    [ compound expr; expr ]
+    ~failure_msg:"Failed parsing root expression"
 
 let parse s =
   let parser = many root_expr in

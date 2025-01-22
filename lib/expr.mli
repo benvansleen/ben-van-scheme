@@ -13,7 +13,7 @@ type expr =
   | `List of expr list
   | `Callable of symbol -> expr list -> expr ]
 
-and operation = { f: symbol; args : expr list }
+and operation = { f : symbol; args : expr list }
 and if_ = { cond : expr; branch_if_true : expr; branch_if_false : expr }
 and let_ = { bindings : binding list; body : expr }
 and lambda = { args : symbol list; body : expr }

@@ -4,7 +4,7 @@ open Ben_van_scheme
 let fail name actual expected =
   let err =
     Printf.sprintf "failed test (%s)\n\texpected: %s\n\tactual: %s" name
-                   expected actual
+      expected actual
   in
   Stdlib.print_endline err;
   failwith err
@@ -31,10 +31,10 @@ let test_fact () =
   let cmd =
     "\n\
      (define (fact n)\n\
-     \  (let ((decr (lambda (n) (- n 1))))\n\
-     \    (if n \n\
-     \        (* n (fact (decr n)))\n\
-     \        1)))\n\n\
+    \  (let ((decr (lambda (n) (- n 1))))\n\
+    \    (if n \n\
+    \        (* n (fact (decr n)))\n\
+    \        1)))\n\n\
      (fact 5)\n\
      \t"
   in

@@ -6,15 +6,15 @@ open Utils
 let shell_cmd cmd ~env =
   match which cmd with
   | true ->
-     log_debug "Storing shell cmd: %s\n" cmd;
-     let call =
-       `Callable
-        (fun _s args ->
-          let args = List.map args ~f:Pp.string_of_expr in
-          `String (exec_with_output cmd args))
-     in
-     Env.set env ~key:cmd ~data:call;
-     cmd
+      log_debug "Storing shell cmd: %s\n" cmd;
+      let call =
+        `Callable
+          (fun _s args ->
+            let args = List.map args ~f:Pp.string_of_expr in
+            `String (exec_with_output cmd args))
+      in
+      Env.set env ~key:cmd ~data:call;
+      cmd
   | false -> failwith @@ sprintf "No command found in PATH: %s" cmd
 
 let rec eval ~env = function
@@ -70,7 +70,7 @@ and eval_lambda { args; body } ~env =
   let inspect_call f args =
     log_debug "Calling: %s\n" f;
     List.iter args ~f:(fun (k, v) ->
-                log_debug "(%s %s)\n" k (Pp.string_of_expr v))
+        log_debug "(%s %s)\n" k (Pp.string_of_expr v))
   in
   let rec call self params =
     let bindings = (self, `Callable call) :: List.zip_exn args params in
@@ -87,13 +87,13 @@ let default_env =
   let lift f = `Callable (fun _ -> f) in
   let open Math in
   Env.make ()
-           ~default:
-           [
-             ("+", lift add);
-             ("-", lift subtract);
-             ("*", lift multiply);
-             ("/", lift divide);
-             ("^", lift power);
-           ]
+    ~default:
+      [
+        ("+", lift add);
+        ("-", lift subtract);
+        ("*", lift multiply);
+        ("/", lift divide);
+        ("^", lift power);
+      ]
 
 let eval expr = expr |> eval ~env:default_env |> Pp.string_of_expr

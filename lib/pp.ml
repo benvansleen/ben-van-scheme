@@ -20,7 +20,10 @@ and string_of_number = function
   | `Float f -> Float.to_string f
 
 and string_of_op { f; args } =
-  args |> List.map ~f:string_of_expr |> string_join ' ' |> sprintf "(%s %s)" f
+  args
+  |> List.map ~f:string_of_expr
+  |> string_join ' '
+  |> sprintf "(%s %s)" f
 
 and string_of_if { cond; branch_if_true; branch_if_false } =
   let cond, branch_if_true, branch_if_false =
@@ -46,6 +49,9 @@ and string_of_list exprs =
   exprs |> List.map ~f:string_of_expr |> string_join ' ' |> sprintf "(%s)"
 
 and string_of_bindings bindings =
-  bindings |> List.map ~f:string_of_binding |> string_join ' ' |> sprintf "[ %s ]"
-  
+  bindings
+  |> List.map ~f:string_of_binding
+  |> string_join ' '
+  |> sprintf "[ %s ]"
+
 and string_of_binding (k, v) = sprintf "(%s %s)" k (string_of_expr v)

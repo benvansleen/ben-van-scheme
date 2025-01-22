@@ -7,9 +7,8 @@ let interactive () =
     let input = Parser.parse @@ Stdlib.read_line () in
     let result = List.map input ~f:Evaluate.eval in
     List.iter (List.zip_exn input result) ~f:(fun (input, output) ->
-                Stdlib.Printf.printf "%d: %s = %s\n"
-                                     !i
-                                     (Pp.string_of_expr input) output);
+        Stdlib.Printf.printf "%d: %s = %s\n" !i (Pp.string_of_expr input)
+          output);
     i := !i + 1
   done
 
@@ -23,4 +22,7 @@ let read_file_to_string filename =
   s
 
 let run_file filename =
-  filename |> read_file_to_string |> eval |> List.iter ~f:Stdlib.print_endline
+  filename
+  |> read_file_to_string
+  |> eval
+  |> List.iter ~f:Stdlib.print_endline

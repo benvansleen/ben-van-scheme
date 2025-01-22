@@ -1,0 +1,9 @@
+profile = conventional
+version = 0.27.0
+margin = 77
+let-binding-spacing=compact
+let-and=sparse
+break-before-in=fit-or-vertical
+break-cases=toplevel
+break-infix=fit-or-vertical
+break-infix-before-func=true
